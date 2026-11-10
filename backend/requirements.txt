@@ -3,7 +3,10 @@ uvicorn[standard]
 psycopg[binary]
 python-dotenv
 groq
-sentence-transformers
 pwdlib[argon2]
 PyJWT[crypto]
 email-validator
+numpy
+onnxruntime
+tokenizers
+huggingface_hub
