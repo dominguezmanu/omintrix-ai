@@ -1,0 +1,73 @@
+name: Omnitrix AI - CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+
+  backend:
+    name: Pruebas Backend
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: backend
+
+    env:
+      GROQ_API_KEY: gsk_clave_ficticia_para_pruebas
+      DATABASE_URL: postgresql://test:test@localhost:5432/test
+      JWT_SECRET_KEY: clave_ficticia_solo_para_ci
+      SECRET_KEY: clave_ficticia_solo_para_ci
+
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: backend/requirements-dev.txt
+
+      - name: Instalar dependencias
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-dev.txt
+
+      - name: Ejecutar pruebas
+        run: |
+          python -m pytest tests/ -v
+
+  frontend:
+    name: Compilar Frontend
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Compilar React
+        env:
+          VITE_API_URL: https://omintrix-ai.onrender.com
+        run: npm run build

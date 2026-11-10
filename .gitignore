@@ -20,3 +20,9 @@ dist/
 # Archivos temporales
 *.log
 .DS_Store
+
+# Modelos locales de embeddings
+backend/modelos_rag/
+
+# Copias temporales
+backend/rag copy.py
